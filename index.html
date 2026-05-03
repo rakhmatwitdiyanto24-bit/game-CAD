@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>Mystery Box 3D | 13 Kelompok - 13 Soal Teknik</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;500;600;700;800&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-deep: #070A0F;
+      --card-bg: #0F141E;
+      --border-dim: #232B37;
+      --gold: #F5B042;
+      --orange: #FF6A2C;
+      --emerald: #2ECC71;
+      --ruby: #E74C3C;
+      --text-light: #F0F3FC;
+      --text-muted: #8E9AAF;
+    }
+
+    body {
+      background: radial-gradient(circle at 20% 10%, #0E121C, #03050A);
+      font-family: 'Inter', sans-serif;
+      color: var(--text-light);
+      min-height: 100vh;
+      padding: 1.5rem;
+    }
+
+    .app-container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    /* Header & Aturan */
+    .rules-panel {
+      background: rgba(15, 20, 30, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-dim);
+      border-radius: 2rem;
+      padding: 1.4rem 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .rules-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 1rem;
+    }
+
+    .rules-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+      gap: 0.7rem;
+    }
+
+    .rule-item {
+      display: flex;
+      gap: 12px;
+      background: #0B0F18;
+      padding: 10px 14px;
+      border-radius: 1rem;
+      border-left: 3px solid var(--orange);
+      font-size: 0.8rem;
+    }
+
+    .rule-num {
+      font-weight: 800;
+      color: var(--gold);
+      min-width: 28px;
+    }
+
+    /* Panel Kelompok 13 */
+    .group-panel {
+      background: #0B0F18;
+      border-radius: 2rem;
+      padding: 1rem 1.5rem;
+      margin-bottom: 1.8rem;
+      border: 1px solid var(--border-dim);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    .group-selector {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: #01010150;
+      padding: 5px 16px;
+      border-radius: 60px;
+    }
+
+    .group-selector select {
+      background: #1A212E;
+      border: 1px solid var(--border-dim);
+      color: white;
+      padding: 8px 12px;
+      border-radius: 32px;
+      font-weight: 500;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .group-status {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--emerald);
+      background: #00000066;
+      padding: 5px 16px;
+      border-radius: 60px;
+    }
+
+    .btn-reset-master {
+      background: #2A2F3E;
+      border: none;
+      padding: 8px 20px;
+      border-radius: 40px;
+      font-weight: 600;
+      color: #ccc;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .btn-reset-master:hover {
+      background: var(--ruby);
+      color: white;
+    }
+
+    /* Grid 13 Kotak Misteri */
+    .mystery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1.2rem;
+      margin: 1.5rem 0;
+    }
+
+    .mystery-card {
+      background: linear-gradient(145deg, #121A26, #0C111C);
+      border: 1px solid #2C3548;
+      border-radius: 1.5rem;
+      aspect-ratio: 1 / 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      box-shadow: 0 8px 14px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    .mystery-card:hover:not(.taken) {
+      transform: translateY(-6px);
+      border-color: var(--gold);
+      box-shadow: 0 16px 28px rgba(0, 0, 0, 0.5);
+    }
+
+    .box-icon {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    .card-label {
+      font-size: 0.68rem;
+      font-weight: 600;
+      background: #000000aa;
+      padding: 4px 12px;
+      border-radius: 20px;
+      text-align: center;
+    }
+
+    .mystery-card.taken {
+      opacity: 0.65;
+      filter: grayscale(0.15);
+      cursor: not-allowed;
+      border-color: #3D465A;
+      background: #0A0F17;
+    }
+
+    .legend {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin: 20px 0 10px;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+    }
+
+    /* MODAL ESSAY */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(2, 4, 10, 0.96);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      visibility: hidden;
+      opacity: 0;
+      transition: 0.2s;
+      z-index: 1000;
+    }
+
+    .modal-overlay.active {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .modal-container {
+      background: #111822;
+      max-width: 700px;
+      width: 90%;
+      border-radius: 2rem;
+      border: 1px solid var(--gold);
+      box-shadow: 0 30px 40px black;
+      transform: scale(0.96);
+      transition: transform 0.2s;
+    }
+
+    .active .modal-container {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 1.2rem 1.8rem;
+      border-bottom: 1px solid #2A3342;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-header h3 {
+      font-weight: 800;
+      color: var(--gold);
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: #9fadc2;
+    }
+
+    .modal-body {
+      padding: 1.5rem 2rem 2rem;
+    }
+
+    .spec-essay-block {
+      background: #0B101A;
+      padding: 1rem;
+      border-radius: 1rem;
+      font-family: 'Space Mono', monospace;
+      font-size: 0.8rem;
+      margin: 1rem 0;
+      border-left: 4px solid var(--orange);
+    }
+
+    .essay-question {
+      font-weight: 700;
+      font-size: 1rem;
+      margin: 1rem 0 0.5rem;
+    }
+
+    textarea {
+      width: 100%;
+      background: #010101;
+      border: 1px solid #2C3548;
+      border-radius: 1rem;
+      padding: 1rem;
+      font-family: 'Space Mono', monospace;
+      color: #E2E8F0;
+      margin: 1rem 0;
+      resize: vertical;
+    }
+
+    .modal-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .btn-submit-essay {
+      background: var(--gold);
+      border: none;
+      padding: 10px 28px;
+      border-radius: 40px;
+      font-weight: 800;
+      color: black;
+      cursor: pointer;
+    }
+
+    .btn-cancel-essay {
+      background: none;
+      border: 1px solid #5A6885;
+      padding: 10px 24px;
+      border-radius: 40px;
+      color: #ccc;
+      cursor: pointer;
+    }
+
+    .feedback-modal {
+      margin-top: 0.8rem;
+      padding: 0.6rem;
+      border-radius: 1rem;
+      font-size: 0.75rem;
+      display: none;
+    }
+
+    .info-footer {
+      text-align: center;
+      margin-top: 2rem;
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      border-top: 1px solid var(--border-dim);
+      padding-top: 1.2rem;
+    }
+
+    @media (max-width: 700px) {
+      .rules-grid { grid-template-columns: 1fr; }
+      .group-panel { flex-direction: column; align-items: stretch; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <!-- Bagian Aturan Main 8 Poin -->
+  <div class="rules-panel">
+    <div class="rules-title">
+      <span>📜</span> MYSTERY OBJECT BERBASIS OPEN THE BOX  - CAD 3D by Rakhmat Witdiyanto
+    </div>
+    <div class="rules-grid">
+      <div class="rule-item"><div class="rule-num">1.</div><div class="rule-text">Siswa diminta memilih kelompok sebagai peserta permainan, setiap kelompok minimal 2 orang (tersedia 13 kelompok).</div></div>
+      <div class="rule-item"><div class="rule-num">2.</div><div class="rule-text">Setiap Kelompok menyerahkan kertas beriisikan nama kelompok dan anggota kepada guru.</div></div>
+      <div class="rule-item"><div class="rule-num">3.</div><div class="rule-text">Guru mengacak kertas nama kelompok untuk menunjuk kelompok maju kedepan.</div></div>
+      <div class="rule-item"><div class="rule-num">4.</div><div class="rule-text">Kelompok yang dipanggil perwakilan kedepan untuk memilih kotak yang tersedia di layar.</div></div>
+      <div class="rule-item"><div class="rule-num">5.</div><div class="rule-text">Setelah membuka kotak,layar menampilkan sebuah kalimat berupa soal mata pelajaran CAD. Kelompok yang mendapatkan soal tersebut WAJIB menyalin soal ke selembar kertas.</div></div>
+      <div class="rule-item"><div class="rule-num">6.</div><div class="rule-text">Kelompok yang sudah mendapatkan kotak harus menunggu kelompok lain yang belum mendapatkan.</div></div>
+      <div class="rule-item"><div class="rule-num">7.</div><div class="rule-text">Tugas dari permainan ini siswa diminta untuk membuat desain 3D pada software inventor dengan soal yang di dapatkan pada kotak tersebut .</div></div>
+      <div class="rule-item"><div class="rule-num">8.</div><div class="rule-text">Setelah semua kelompok mendapatkan soal guru menyalakan timer sebagai acuan pengerjaan.</div></div>
+    </div>
+  </div>
+
+  <!-- Panel 13 KELOMPOK -->
+  <div class="group-panel">
+    <div class="group-selector">
+      <span>👥 Pilih Kelompok (13 tersedia) :</span>
+      <select id="groupSelect"></select>
+    </div>
+    <div class="group-status" id="groupStatusText">⚡ Belum memilih kotak</div>
+    <button class="btn-reset-master" id="masterResetBtn">⟳ RESET SEMUA (Guru)</button>
+  </div>
+
+  <!-- 13 Kotak Misteri -->
+  <div class="mystery-grid" id="mysteryGrid"></div>
+  <div class="legend">
+    <span>❓ Kotak tersedia</span> <span>📦🔒 Sudah diambil kelompok lain</span> <span>✨ Setiap kelompok HANYA 1 kotak</span>
+  </div>
+  <div class="info-footer">
+    📝 Catatan: Setelah kelompok memilih kotak, soal essay akan ditampilkan. <strong>SALIN SOAL KE KERTAS</strong>, lalu tunggu instruksi timer dari guru.
+  </div>
+</div>
+
+<!-- MODAL SOAL ESSAY -->
+<div id="essayModal" class="modal-overlay">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3>📦 KOTAK SOAL - ESSAY TEKNIK 3D</h3>
+      <button class="close-modal" id="closeModalBtn">&times;</button>
+    </div>
+    <div class="modal-body" id="modalBodyContent">
+      <!-- dynamic dari js -->
+    </div>
+  </div>
+</div>
+
+<script>
+  // ==========================================================
+  // 13 SOAL ESSAY UNIK - GAMBAR TEKNIK & VOLUME 3D
+  // ==========================================================
+  const QUESTIONS = [
+    { id:0, title:"Balok + Lubang Silinder", spec:["As roda panjang 100 mm diameter ke-1 20 mm sepanjang 30 mm, diameter ke-2 40 mm sepanjang 40 mm, diameter ke-3 50 mm sepanjang 30mm. dilubangi 10 mm sepanjang 20 mm"], question:"Tambahan waktu 1 menit " },
+    { id:1, title:"Poros Bertingkat", spec:["Panjang 100 mm Lebar 100 mm Tinggi 30 mm di tengah extrude lingkaran diameter 30mm tinggi 40 mm. extrudnya di lubangi sedalam 10 mm diameter 15 mm"], question:"Tambahan waktu 2 menit" },
+    { id:2, title:"Kubus Berlubang Persegi", spec:["Panjang 100 mm Lebar 100 mm Tinggi 50 mm, ditengah cut Panjang 50 mm Lebar 50mm di cut sedalam 20 mm, di tengah dilubangi diameter 30 mm "], question:"Tambahan waktu 2 menit" },
+    { id:3, title:"Silinder + Flange Cincin", spec:["Panjang 200mm Lebar 150 mm Tinggi 40 mm setiap sudut di fillet 8 mm dan setiap sudut dikasih lubang diameter 40 mm dengan masing masing jarak 10mm "], question:"Tambahan waktu 5 menit" },
+    { id:4, title:"Bracket L (dua plat)", spec:["As roda Panjang 150 mm diameter ke-1 20 mm sepanjang 25 mm, diameter ke-2 30 mm sepanjang 25 mm, diameter ke-3 40 mm sepanjang 40mm, diameter ke-4 60 mm sepanjang 60 mm. di kasih lubang 10 mm "], question:" Tammbahan waktu 3 menit " },
+    { id:5, title:"Cincin / Ring Gear", spec:["Panjang 150 mm Lebar 150 mm Tinggi 30 mm setiap sudut diberi pilar kotak dengan panjang 40 mm lebar 40 mm tinggi 60 mm dan pilar kotak di tengah dengan dimensi yang sama"], question:"Tambahan waktu 5 menit" },
+    { id:6, title:"Kerucut Pejal", spec:["Panjang 100 mm Lebar 100 mm Tinggi 40 mm di setiap sudut terdapat 4 pilar berbentuk silinder dengan diameter 35 mm tinggi 50 mm "], question:"Tambahan waktu 3" },
+    { id:7, title:"Tabung + Setengah Bola", spec:["As roda Panjang 100 mm diameter ke-1 30 mm sepanjang 20 mm, diameter ke-2 40 mm sepanjang 60 mm, diameter ke-3 20mm sepanjang 20mm, sisi satu dilubangi 10 mm sedalam 20 mm, sisi satu dilbangi 8 mm sedalam 20 mm "], question:"Tambahan waktu 1 menit " },
+    { id:8, title:"Balok dengan Alur Segitiga", spec:["Buatlah 3D persegi PxL bebas, ditengah ada silinder diamater bebas sepanjang 40 mm, dalam 40 mm terdapat 2 ukuran berbeda pada silindernya"], question:"Tambahan waktu 5 menit" },
+    { id:9, title:"Poros Lubang Aksial", spec:["buatlah 3D persegi PxL bebas tinggi 30 mm, di setiap sudut ada pilar ukuran dan tinggi bebas jumlah pilar 5 (4 di setiap sudut 1 di tengah)"], question:"Tambahan waktu 1 menit" },
+    { id:10, title:"Prisma Segitiga Siku", spec:["buatlah 3D persegi PxL tinggi 20 mm, di tengah ada pilar berbentuk silinder berjumlah 3 dengan jarak bebas dan ukuran bebas , ketiga pilar ukuran berbeda "], question:"Tambahan waktu 4 menit" },
+    { id:11, title:"Blok + Tonjolan Silinder", spec:["Panjang 100 mm Lebar 200 mm Tinggi 30 mm di tengah terdapat 3 pilar (2 pilar berbentuk persegi 2 pilar berbengtuk silinder,tinggi 30mm ukuran bebas )"], question:"tambahan waktu 4 menit" },
+    { id:12, title:"Frustum Kerucut", spec:["Buatlah 3D PxL bebas setiap sudut samping di fillet (ukuran bebas), ditengah terdapat 3 lubang dengan kedalaman dan ukuran yang berbeda"], question:"Tambahan 3 menit " }
+  ];
+
+  // 13 Kelompok dengan data masing-masing
+  const GROUPS = [
+    "Kelompok 1 - Alpha", "Kelompok 2 - Bravo", "Kelompok 3 - Charlie", "Kelompok 4 - Delta",
+    "Kelompok 5 - Echo", "Kelompok 6 - Foxtrot", "Kelompok 7 - Golf", "Kelompok 8 - Hotel",
+    "Kelompok 9 - India", "Kelompok 10 - Juliet", "Kelompok 11 - Kilo", "Kelompok 12 - Lima",
+    "Kelompok 13 - Mike"
+  ];
+
+  // state : boxesTaken[0..12] = boolean, boxOwner[index] = nama kelompok pemilik
+  let boxesTaken = new Array(13).fill(false);
+  let boxOwner = new Array(13).fill(null);
+  // kelompokTerpilih menyimpan kotak yang sudah diambil oleh masing2 group
+  let groupBoxMap = new Array(13).fill(null); // index urutan group sama seperti GROUPS
+
+  // Load & Save ke localStorage
+  function loadGameState() {
+    const storedTaken = localStorage.getItem("mystery13_boxesTaken");
+    const storedOwner = localStorage.getItem("mystery13_boxOwner");
+    const storedGroupMap = localStorage.getItem("mystery13_groupMap");
+    if(storedTaken) boxesTaken = JSON.parse(storedTaken);
+    if(storedOwner) boxOwner = JSON.parse(storedOwner);
+    if(storedGroupMap) groupBoxMap = JSON.parse(storedGroupMap);
+    // validasi panjang
+    if(boxesTaken.length !== 13) boxesTaken = new Array(13).fill(false);
+    if(boxOwner.length !== 13) boxOwner = new Array(13).fill(null);
+    if(groupBoxMap.length !== 13) groupBoxMap = new Array(13).fill(null);
+  }
+
+  function saveGameState() {
+    localStorage.setItem("mystery13_boxesTaken", JSON.stringify(boxesTaken));
+    localStorage.setItem("mystery13_boxOwner", JSON.stringify(boxOwner));
+    localStorage.setItem("mystery13_groupMap", JSON.stringify(groupBoxMap));
+  }
+
+  // Render dropdown 13 kelompok
+  function renderGroupSelect() {
+    const select = document.getElementById("groupSelect");
+    select.innerHTML = "";
+    GROUPS.forEach((g, idx) => {
+      const option = document.createElement("option");
+      option.value = idx;
+      option.textContent = `${g}`;
+      select.appendChild(option);
+    });
+  }
+
+  // render 13 kotak misteri
+  function renderMysteryBoxes() {
+    const grid = document.getElementById("mysteryGrid");
+    grid.innerHTML = "";
+    for (let i = 0; i < 13; i++) {
+      const isTaken = boxesTaken[i];
+      const ownerName = boxOwner[i] ? boxOwner[i] : "";
+      const card = document.createElement("div");
+      card.className = `mystery-card ${isTaken ? "taken" : ""}`;
+      const iconSpan = document.createElement("div");
+      iconSpan.className = "box-icon";
+      iconSpan.innerText = isTaken ? "🔒📦" : "🎁";
+      const labelSpan = document.createElement("div");
+      labelSpan.className = "card-label";
+      if (isTaken) {
+        labelSpan.innerText = `Diambil ${ownerName.substring(0, 12)}`;
+      } else {
+        labelSpan.innerText = `Kotak ${i+1}`;
+      }
+      card.appendChild(iconSpan);
+      card.appendChild(labelSpan);
+      if (!isTaken) {
+        card.addEventListener("click", (e) => {
+          e.stopPropagation();
+          handleSelectBox(i);
+        });
+      }
+      grid.appendChild(card);
+    }
+    updateGroupStatusUI();
+  }
+
+  function updateGroupStatusUI() {
+    const selectedGroupIdx = parseInt(document.getElementById("groupSelect").value, 10);
+    const statusSpan = document.getElementById("groupStatusText");
+    const takenBoxId = groupBoxMap[selectedGroupIdx];
+    if (takenBoxId !== null && takenBoxId !== undefined && takenBoxId >= 0) {
+      statusSpan.innerHTML = `🔒 Kelompok sudah mengambil KOTAK ${takenBoxId+1}. Tidak bisa ambil lagi.`;
+      statusSpan.style.color = "#F5B042";
+    } else {
+      statusSpan.innerHTML = `🎲 Kelompok siap memilih kotak (belum mengambil). Pilih kotak yang tersedia!`;
+      statusSpan.style.color = "#2ECC71";
+    }
+  }
+
+  // handle memilih kotak
+  function handleSelectBox(boxId) {
+    const selectedGroupIdx = parseInt(document.getElementById("groupSelect").value, 10);
+    if (isNaN(selectedGroupIdx)) return alert("Pilih kelompok terlebih dahulu!");
+    const groupName = GROUPS[selectedGroupIdx];
+    // cek apakah group sudah punya kotak
+    if (groupBoxMap[selectedGroupIdx] !== null) {
+      alert(`⚠️ ${groupName} sudah mengambil kotak ${groupBoxMap[selectedGroupIdx]+1}. Setiap kelompok hanya 1 kotak!`);
+      return;
+    }
+    if (boxesTaken[boxId] === true) {
+      alert(`❌ Kotak ${boxId+1} sudah diambil oleh ${boxOwner[boxId]}. Pilih kotak lain.`);
+      return;
+    }
+    // ambil kotak
+    boxesTaken[boxId] = true;
+    boxOwner[boxId] = groupName;
+    groupBoxMap[selectedGroupIdx] = boxId;
+    saveGameState();
+    renderMysteryBoxes();
+    // Buka modal soal essay untuk kelompok ini
+    openEssayModal(boxId, groupName);
+  }
+
+  function openEssayModal(boxId, groupName) {
+    const soal = QUESTIONS[boxId % QUESTIONS.length];
+    const modalBody = document.getElementById("modalBodyContent");
+    modalBody.innerHTML = `
+      <div style="margin-bottom:6px;"><span style="background:#FF6A2C30; padding:4px 12px; border-radius:30px;">🎯 ${groupName} · Kotak ${boxId+1}</span></div>
+      <div class="spec-essay-block">
+        ${soal.spec.map(s => `<p>📐 ${s}</p>`).join('')}
+      </div>
+      <div class="essay-question">✍️ <strong>${soal.question}</strong></div>
+      <textarea id="essayAnswerInput" rows="5" placeholder="Tulis jawaban essay kelompokmu di sini (sebagai draft) . . .&#10;⚠️ INGAT ATURAN: catat soal ke kertas fisik terlebih dahulu!"></textarea>
+      <div id="modalFeedbackMsg" class="feedback-modal"></div>
+      <div class="modal-buttons">
+        <button class="btn-cancel-essay" id="cancelModalBtn">Tutup & Catat ke Kertas</button>
+        <button class="btn-submit-essay" id="submitModalBtn">💾 Simpan Jawaban (Arsip Digital)</button>
+      </div>
+      <p style="font-size:0.7rem; margin-top:12px;">✅ Sesuai peraturan nomor 6 & 7: setelah menyalin soal ke kertas, TUNGGU kelompok lain menyelesaikan pemilihan. Guru akan memulai timer bersama.</p>
+    `;
+    const modal = document.getElementById("essayModal");
+    modal.classList.add("active");
+
+    // cancel / close
+    document.getElementById("cancelModalBtn").onclick = () => {
+      modal.classList.remove("active");
+    };
+    document.getElementById("submitModalBtn").onclick = () => {
+      const answerText = document.getElementById("essayAnswerInput").value.trim();
+      const fbDiv = document.getElementById("modalFeedbackMsg");
+      if (answerText === "") {
+        fbDiv.innerText = "⚠️ Tulis jawaban di kertas sesuai aturan! Isi digital opsional, namun kosong tidak disarankan.";
+        fbDiv.style.display = "block";
+        fbDiv.style.backgroundColor = "#3a1f1f";
+        fbDiv.style.borderLeft = "3px solid #E74C3C";
+        return;
+      }
+      // simpan jawaban ke localStorage untuk arsip
+      let savedEssays = JSON.parse(localStorage.getItem("mystery13_essays") || "{}");
+      savedEssays[`${groupName}_box${boxId}`] = { answer: answerText, timestamp: new Date().toLocaleString() };
+      localStorage.setItem("mystery13_essays", JSON.stringify(savedEssays));
+      fbDiv.innerText = "✓ Jawaban tersimpan sebagai arsip. Jangan lupa menulis di kertas untuk dikumpulkan!";
+      fbDiv.style.display = "block";
+      fbDiv.style.backgroundColor = "#1d3a1d";
+      fbDiv.style.borderLeft = "3px solid #2ECC71";
+      setTimeout(() => {
+        modal.classList.remove("active");
+      }, 1400);
+    };
+    // tombol X
+    document.getElementById("closeModalBtn").onclick = () => {
+      modal.classList.remove("active");
+    };
+    modal.addEventListener("click", (e) => {
+      if (e.target === modal) modal.classList.remove("active");
+    });
+  }
+
+  // RESET total oleh guru (menghapus semua progres)
+  function masterReset() {
+    if (confirm("⚠️ RESET TOTAL PERMAINAN !\nSemua kotak akan terbuka, semua kelompok kehilangan pilihan kotak. Yakin ?")) {
+      boxesTaken.fill(false);
+      boxOwner.fill(null);
+      groupBoxMap.fill(null);
+      saveGameState();
+      renderMysteryBoxes();
+      alert("✅ Seluruh data direset. 13 kotak tersedia kembali, semua kelompok bisa memilih ulang.");
+    }
+  }
+
+  // ganti kelompok -> update status UI
+  function bindEvents() {
+    const selectEl = document.getElementById("groupSelect");
+    selectEl.addEventListener("change", () => {
+      renderMysteryBoxes(); 
+      updateGroupStatusUI();
+    });
+    document.getElementById("masterResetBtn").addEventListener("click", masterReset);
+  }
+
+  // Inisialisasi
+  function init() {
+    loadGameState();
+    renderGroupSelect();
+    renderMysteryBoxes();
+    bindEvents();
+    // jika ada kelompok yang sudah memiliki kotak, tampilkan status
+    updateGroupStatusUI();
+  }
+
+  init();
+</script>
+</body>
+</html>
